@@ -3,6 +3,7 @@ import './App.css';
 import Row from './Row';
 import wordList from './wordList';
 import Header from './Header';
+import Keyboard from './Keyboard';
 function App() {
   const wordGen = () => {
       const today = new Date();
@@ -78,6 +79,9 @@ function App() {
       }
       else {
         dom.style.animation = "wrong 1s forwards";
+        const virtDom = document.getElementById(input[i]);
+        virtDom.style.backgroundColor = "#3a3a3c";
+        virtDom.style.Color = "white";
         bannerText += "⬜ ";
       }
      await sleep(1000) ;
@@ -158,6 +162,44 @@ function App() {
   function copyScore() {
     navigator.clipboard.writeText(bannerData);
   }
+  async function virtInput(key) {
+    if(key === "ENT") {
+      if(divNum === word.length) {
+      const correct = await checkRow(rowNum);
+      if(correct === word.length) {
+        document.onkeydown = null; 
+        await winner(rowNum);
+        createBanner();
+      }
+      if(rowNum === noOfTry- 1) {
+        document.onkeydown = null;
+        createBanner();
+      }
+      else {
+      rowNum++;
+      divNum=0;
+      }
+    }
+    }
+    else if(key === "BCK") {
+        const dom = document.getElementById(`row-${rowNum}-input-${divNum-1}`);
+        dom.textContent = "";
+        if(divNum > 0) {
+            divNum--;
+        }
+    }
+    else {
+      if(divNum <= word.length - 1)
+      {
+        const dom = document.getElementById(`row-${rowNum}-input-${divNum}`);
+        dom.textContent = key.toUpperCase();
+      }
+      if(divNum <= word.length - 1)
+      {
+      divNum++;
+      }
+    }
+  }
   return (
     <div className="container">
       <Header />
@@ -170,6 +212,7 @@ function App() {
       <div className="maincontent" >
       {elements}<br />
       </div>
+      <Keyboard virtInput={virtInput}/>
     </div>
   );
 
