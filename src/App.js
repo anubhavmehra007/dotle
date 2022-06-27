@@ -1,9 +1,20 @@
 import React from 'react';
 import './App.css';
 import Row from './Row';
+import wordList from './wordList';
+import Header from './Header';
 function App() {
-  const noOfTry =  5;
-  const word = "rusty";
+  const wordGen = () => {
+      const today = new Date();
+      today.setHours(0,0,0);
+      const epoch = new Date("June 19 2021");
+      epoch.setHours(0,0,0);
+      const seed = Math.floor((today - epoch)/864e5);
+      const wordlist = wordList();
+      return wordlist[seed % wordlist.length];
+  };
+  const word = wordGen();
+  const noOfTry = word.length;
   const elements = [];
   let divNum = 0;
   let bannerText = "";
@@ -149,6 +160,7 @@ function App() {
   }
   return (
     <div className="container">
+      <Header />
       <div className='banner' id='banner'>
         <div id="banner-data">
       {banners}
