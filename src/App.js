@@ -43,9 +43,15 @@ function App() {
       }
     }
     const maybeTrue = []
+    console.log(answerLocal);
+    console.log(maybe);
     for(let i = 0; i < maybe.length; i++) {
       if(answerLocal.includes(inputWord[maybe[i]]) === true) {
         maybeTrue.push(maybe[i]);
+        const index = answerLocal.indexOf(inputWord[maybe[i]]);
+
+        answerLocal.splice(index, 1);
+        console.log(answerLocal);
       }
     }
     for(let i = 0; i < word.length; i++) {
