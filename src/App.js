@@ -4,24 +4,94 @@ import Row from './Row';
 import wordList from './wordList';
 import Header from './Header';
 import Keyboard from './Keyboard';
+
 function App() {
   let puzzleNumber;
-  const wordGen = () => {
+  let state = {};
+  let renderFromState = false;
+  function renderFromStorage() {
+    for(let row of state.board) {
+      let rowNum = row.rowNum;
+      for(let div of row.divs) {
+        let divNum = div.divNum;
+        let char = div.data;
+        const tile = document.getElementById(`row-${rowNum}-input-${divNum}`);
+        const key = document.getElementById(char);
+        if(div.state === "correct") {
+          tile.style.backgroundColor = "green";
+        }
+        else if(div.state === "maybe") {
+          tile.style.backgroundColor = "yellow";
+      }
+      else if(div.state === "wrong") {
+          key.style.backgroundColor = "#3a3a3c";
+      }
+      else {}
+      tile.textContent = char.toUpperCase();
+    }  
+    if(state.over) {createBanner();}
+  } 
+  }
+  if (localStorage.state) {
+    state = JSON.parse(localStorage.state);
+    let today = new Date();
+    today.setHours(0,0,0);
+    if(true) {
+      renderFromState = true;
+    
+}
+  else {
+    state = {
+     board : [],
+     word : "",
+     rowNum: 0,
+     bannerData : "",
+     date : new Date(),
+     over : false,
+     puzzleNumber : -1
+    };
+    state.date.setHours(0,0,0);
+  }
+}
+  else {
+    state = {
+     board : [],
+     word : "",
+     rowNum: 0,
+     bannerData : "",
+     date : new Date(),
+     over: false,
+     puzzleNumber : -1
+    };
+    state.date.setHours(0,0,0);
+}
+const wordGen = () => {
       const today = new Date();
       const wordlist = wordList();
       today.setHours(0,0,0);
       const epoch = new Date("June 19 2021");
       epoch.setHours(0,0,0);
       const seed = Math.round((today - epoch)/864e5);
-      puzzleNumber = seed - 373;
+      if(state.puzzleNumber === -1) {
+        puzzleNumber = seed - 373;
+        state.puzzleNumber = puzzleNumber;
+      }
       return wordlist[seed % wordlist.length];
   };
-  const word = wordGen();
+ let word; 
+  if(state.word === "") {
+    word = wordGen();
+    state.word = word;
+  }
+  else {
+    word = state.word;
+    puzzleNumber = state.puzzleNumber;
+  }
   const noOfTry = word.length;
   const elements = [];
   let divNum = 0;
-  let rowNum = 0;
-  let bannerText = "";
+  let rowNum = state.rowNum;
+  let bannerText = state.bannerData;
   let virtInput;
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const [banners, setBanners] = React.useState([]);
@@ -29,6 +99,10 @@ function App() {
   const [over, setOver] = React.useState(false);
   
 
+  let row = {
+      rowNum : 0,
+      divs : []
+    };
   async function checkRow(rowNum)
   {
     let correct = 0;
@@ -61,27 +135,38 @@ function App() {
       }
     }
     const maybeTrue = []
-    console.log(answerLocal);
-    console.log(maybe);
     for(let i = 0; i < maybe.length; i++) {
       if(answerLocal.includes(inputWord[maybe[i]]) === true) {
         maybeTrue.push(maybe[i]);
         const index = answerLocal.indexOf(inputWord[maybe[i]]);
 
         answerLocal.splice(index, 1);
-        console.log(answerLocal);
       }
     }
+    row.rowNum = rowNum;
+    row.divs = [];
     for(let i = 0; i < word.length; i++) {
       const dom = document.getElementById(`row-${rowNum}-input-${i}`);
+      let div;
       if(corr.includes(i))
       {
         dom.style.animation = "correct 1s forwards";
+         div = {
+          divNum : i,
+          state: "correct",
+          data: input[i]
+        }
+
         bannerText += "🟩 ";
       }
       else if(maybeTrue.includes(i)) {
         dom.style.animation = "maybe 1s forwards";
         bannerText += "🟨 ";
+        div = {
+          divNum : i,
+          state: "maybe",
+          data: input[i]
+        }
       }
       else {
         dom.style.animation = "wrong 1s forwards";
@@ -89,25 +174,32 @@ function App() {
         virtDom.style.backgroundColor = "#3a3a3c";
         virtDom.style.Color = "white";
         bannerText += "⬜ ";
+        div = {
+          divNum : i,
+          state: "wrong",
+          data: input[i]
+        }
       }
+      row.divs.push(div);
      await sleep(1000) ;
       }
       bannerText += "\n";
+      state.bannerData += bannerText;
     return correct;
   }
   function createBanner() {
     setOver(true);
+    state.over = true;
     const banner = document.getElementById("banner");
     const bannerLines = bannerText.split("\n");
     const bannersLocal = bannerLines.map(item => (
-    <p key="key-paragraph">{item}</p>
+    <p key={`para-${bannerLines.indexOf(item)}`}>{item}</p>
     ));
     banner.style.display = "flex";
     banner.style.flexDirection = "column";
     banner.style.alignItems = "center";
     setBanners(bannersLocal);
     setBannerData(prevText => {return (prevText + "\n" + bannerText);});
-    console.log(bannerData);
 
   }
    async function winner(rowNum) {
@@ -121,6 +213,7 @@ function App() {
     if(key === "Enter" || key === "ENT") {
       if(divNum === word.length) {
       const correct = await checkRow(rowNum);
+      state.board.push(row);
       if(correct === word.length) {
         await winner(rowNum);
         createBanner();
@@ -131,7 +224,9 @@ function App() {
       else {
       rowNum++;
       divNum=0;
+      state.rowNum = rowNum;
       }
+      localStorage.setItem("state", JSON.stringify(state));
     }
     }
     else if(key === "Backspace"  || key === "BCK") {
@@ -180,7 +275,6 @@ function App() {
     await sleep(125);
     await processKey(key);
   }
-  console.log(over);
   if(over) {
     document.onkeydown = () => {};
     virtInput = null;
@@ -190,7 +284,7 @@ function App() {
     virtInput = virtInputDo;
   }
   return (
-    <div className="container">
+    <div className="container" onLoad ={() => {if(renderFromState) {renderFromStorage(); }}}>
       <Header />
       <div className='banner' id='banner'>
         <button id="bannerClose" onClick={() =>{
