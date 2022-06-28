@@ -8,6 +8,7 @@ import Keyboard from './Keyboard';
 function App() {
   let puzzleNumber;
   let state = {};
+  const wordlist = wordList();
   let renderFromState = false;
   function renderFromStorage() {
     for(let row of state.board) {
@@ -21,7 +22,7 @@ function App() {
           tile.style.backgroundColor = "green";
         }
         else if(div.state === "maybe") {
-          tile.style.backgroundColor = "yellow";
+          tile.style.backgroundColor = "#d3b703";
       }
       else if(div.state === "wrong") {
           key.style.backgroundColor = "#3a3a3c";
@@ -67,7 +68,6 @@ function App() {
 }
 const wordGen = () => {
       const today = new Date();
-      const wordlist = wordList();
       today.setHours(0,0,0);
       const epoch = new Date("June 19 2021");
       epoch.setHours(0,0,0);
@@ -128,6 +128,7 @@ const wordGen = () => {
       input.push(text);
     }
     const inputWord = input.join("");
+    if(wordlist.indexOf(inputWord) === -1)  {return -1;}
     let answerLocal = []
     for(let i = 0 ; i < word.length; i++) {
       if(corr.includes(i) === false) {
@@ -184,7 +185,7 @@ const wordGen = () => {
      await sleep(1000) ;
       }
       bannerText += "\n";
-      state.bannerData += bannerText;
+      state.bannerData = bannerText;
     return correct;
   }
   function createBanner() {
@@ -213,7 +214,13 @@ const wordGen = () => {
     if(key === "Enter" || key === "ENT") {
       if(divNum === word.length) {
       const correct = await checkRow(rowNum);
-      state.board.push(row);
+      if(correct === -1) {
+        const dom = document.getElementById("alert");
+        dom.style.animation = "alert-notice 1s";
+        await sleep(500);
+        dom.style.animation = "none";
+        return; 
+      }
       if(correct === word.length) {
         await winner(rowNum);
         createBanner();
@@ -224,6 +231,8 @@ const wordGen = () => {
       else {
       rowNum++;
       divNum=0;
+      console.log(row);
+      state.board.push({...row});
       state.rowNum = rowNum;
       }
       localStorage.setItem("state", JSON.stringify(state));
@@ -273,6 +282,7 @@ const wordGen = () => {
     const dom = document.getElementById(key);
     dom.style.animation ="clicked 0.125s";
     await sleep(125);
+    dom.style.animation = "none";
     await processKey(key);
   }
   if(over) {
@@ -286,6 +296,7 @@ const wordGen = () => {
   return (
     <div className="container" onLoad ={() => {if(renderFromState) {renderFromStorage(); }}}>
       <Header />
+      <div className = "alert" id="alert" >Not in List</div>
       <div className='banner' id='banner'>
         <button id="bannerClose" onClick={() =>{
           const dom = document.getElementById("banner");

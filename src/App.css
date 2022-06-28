@@ -18,6 +18,25 @@
   margin: 0.625rem;
 
 }
+.alert{
+  text-align:center;
+  overflow: hidden;
+  border-radius: 4px;
+  background-color: azure;
+  width: 80px;
+  padding-top: 5px;
+  position: absolute;
+  left: 650px;
+  top : 200px;
+  height: 30px;
+  visibility: hidden;
+  display: flex;
+
+}
+@keyframes alert-notice {
+  0% {visibility : hidden;}
+  100% {visibility: visible;}
+}
 .maincontent {
   margin-top: 9.375rem;
   display: flex;
@@ -134,13 +153,13 @@
   70% { background-color : #3a3a3c;
     transform: rotateY(252deg);
     }
-  80% { background-color : yellow;
+  80% { background-color :  #d3b703;
     transform: rotateY(288deg);
     }
-  90% { background-color : yellow;
+  90% { background-color :  #d3b703;
     transform: rotateY(324deg);
     }
-  100% { background-color : yellow;
+  100% { background-color :  #d3b703;
     transform: rotateY(360deg);
     }
   }
