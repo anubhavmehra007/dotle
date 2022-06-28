@@ -49,10 +49,10 @@
   display: none;
   margin: auto;
   position: absolute;
-  left : max(15vw , 580px);
+  left : max(37.45vw , 37.45vh);
   top : 20vh;
-  width : 31.25rem;
-  height : 18.75rem;
+  width : 25vw;
+  height : auto;
   border-radius : 8px;
   z-index: 1000;
   background-color: #3a3a3c;
@@ -67,19 +67,24 @@
   border-radius: 8px;
   height:auto;
   font-size: 2rem;
-  margin: auto;
+  margin: 0.625rem;
   display: inline-flex;
   text-align: center;
   align-items: center;
 }
 #banner-data {
   margin-block: 1.25rem;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  font-size: 1.5rem;
 }
 .closeButton {
   background-color: azure;
 
-  position : absolute;
-  left: max(67vw, 620px);
+  position : relative;
+  left: 10vw;
   top: 1vh;
 }
 .virtKeyboard {

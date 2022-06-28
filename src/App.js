@@ -5,6 +5,7 @@ import wordList from './wordList';
 import Header from './Header';
 import Keyboard from './Keyboard';
 function App() {
+  let puzzleNumber;
   const wordGen = () => {
       const today = new Date();
       const wordlist = wordList();
@@ -12,20 +13,21 @@ function App() {
       const epoch = new Date("June 19 2021");
       epoch.setHours(0,0,0);
       const seed = Math.round((today - epoch)/864e5);
-      console.log(today);
-      console.log(epoch);
-      console.log(seed);
-      console.log(seed % wordlist.length);
+      puzzleNumber = seed - 373;
       return wordlist[seed % wordlist.length];
   };
   const word = wordGen();
   const noOfTry = word.length;
   const elements = [];
   let divNum = 0;
+  let rowNum = 0;
   let bannerText = "";
+  let virtInput;
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const [banners, setBanners] = React.useState([]);
-  const [bannerData, setBannerData] = React.useState("");
+  const [bannerData, setBannerData] = React.useState(`Dotle puzzle: #${puzzleNumber}`);
+  const [over, setOver] = React.useState(false);
+  
 
   async function checkRow(rowNum)
   {
@@ -94,6 +96,7 @@ function App() {
     return correct;
   }
   function createBanner() {
+    setOver(true);
     const banner = document.getElementById("banner");
     const bannerLines = bannerText.split("\n");
     const bannersLocal = bannerLines.map(item => (
@@ -103,7 +106,8 @@ function App() {
     banner.style.flexDirection = "column";
     banner.style.alignItems = "center";
     setBanners(bannersLocal);
-    setBannerData(bannerText);
+    setBannerData(prevText => {return (prevText + "\n" + bannerText);});
+    console.log(bannerData);
 
   }
    async function winner(rowNum) {
@@ -113,18 +117,15 @@ function App() {
       await sleep(100) ;
       }
   }
-  let rowNum = 0;
-  document.onkeydown =  async function (event) {
-    if(event.key === "Enter") {
+  const processKey = async (key) => {
+    if(key === "Enter" || key === "ENT") {
       if(divNum === word.length) {
       const correct = await checkRow(rowNum);
       if(correct === word.length) {
-        document.onkeydown = null; 
         await winner(rowNum);
         createBanner();
       }
       if(rowNum === noOfTry- 1) {
-        document.onkeydown = null;
         createBanner();
       }
       else {
@@ -133,7 +134,7 @@ function App() {
       }
     }
     }
-    else if(event.key === "Backspace") {
+    else if(key === "Backspace"  || key === "BCK") {
         const dom = document.getElementById(`row-${rowNum}-input-${divNum-1}`);
         dom.textContent = "";
         if(divNum > 0) {
@@ -141,14 +142,14 @@ function App() {
         }
     }
     else {
-      if(event.key.length > 1) {
+      if(key.length > 1) {
         console.log("invalid key ignoring");
       }
       else {
       if(divNum <= word.length - 1)
       {
         const dom = document.getElementById(`row-${rowNum}-input-${divNum}`);
-        dom.textContent = event.key.toUpperCase();
+        dom.textContent = key.toUpperCase();
       }
       if(divNum <= word.length - 1)
       {
@@ -156,6 +157,9 @@ function App() {
       }
     }
   }
+  }
+  const keyDown =   async function (event) {
+   await processKey(event.key) ;
     
   }
   for(let i = 0; i < noOfTry; i++){
@@ -170,48 +174,20 @@ function App() {
     await sleep(125);
     dom.style.animation = "none";
   }
-  async function virtInput(key) {
+  const virtInputDo = async function (key) {
     const dom = document.getElementById(key);
     dom.style.animation ="clicked 0.125s";
     await sleep(125);
-    dom.style.animation = "none";
-    if(key === "ENT") {
-
-      if(divNum === word.length) {
-      const correct = await checkRow(rowNum);
-      if(correct === word.length) {
-        document.onkeydown = null; 
-        await winner(rowNum);
-        createBanner();
-      }
-      if(rowNum === noOfTry- 1) {
-        document.onkeydown = null;
-        createBanner();
-      }
-      else {
-      rowNum++;
-      divNum=0;
-      }
-    }
-    }
-    else if(key === "BCK") {
-        const dom = document.getElementById(`row-${rowNum}-input-${divNum-1}`);
-        dom.textContent = "";
-        if(divNum > 0) {
-            divNum--;
-        }
-    }
-    else {
-      if(divNum <= word.length - 1)
-      {
-        const dom = document.getElementById(`row-${rowNum}-input-${divNum}`);
-        dom.textContent = key.toUpperCase();
-      }
-      if(divNum <= word.length - 1)
-      {
-      divNum++;
-      }
-    }
+    await processKey(key);
+  }
+  console.log(over);
+  if(over) {
+    document.onkeydown = () => {};
+    virtInput = null;
+  }
+  else {
+    document.onkeydown = keyDown;
+    virtInput = virtInputDo;
   }
   return (
     <div className="container">
@@ -222,6 +198,7 @@ function App() {
           dom.style.display = "none";
         }} className="closeButton">X</button>
         <div id="banner-data">
+          <p>Dotle puzzle : #{puzzleNumber}</p> <br />
       {banners}
       </div>
       <button className="copyScore" id="copyScore" onClick={copyScore}>Copy Score</button>
