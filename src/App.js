@@ -7,11 +7,15 @@ import Keyboard from './Keyboard';
 function App() {
   const wordGen = () => {
       const today = new Date();
+      const wordlist = wordList();
       today.setHours(0,0,0);
       const epoch = new Date("June 19 2021");
       epoch.setHours(0,0,0);
-      const seed = Math.floor((today - epoch)/864e5);
-      const wordlist = wordList();
+      const seed = Math.round((today - epoch)/864e5);
+      console.log(today);
+      console.log(epoch);
+      console.log(seed);
+      console.log(seed % wordlist.length);
       return wordlist[seed % wordlist.length];
   };
   const word = wordGen();
@@ -159,11 +163,20 @@ function App() {
       (<Row  key={`row-${i}`} answer={word} rowNum = {i} />)
     )
   }
-  function copyScore() {
+  async function copyScore() {
     navigator.clipboard.writeText(bannerData);
+    const dom = document.getElementById("copyScore");
+    dom.style.animation = "clicked-score 0.125s";
+    await sleep(125);
+    dom.style.animation = "none";
   }
   async function virtInput(key) {
+    const dom = document.getElementById(key);
+    dom.style.animation ="clicked 0.125s";
+    await sleep(125);
+    dom.style.animation = "none";
     if(key === "ENT") {
+
       if(divNum === word.length) {
       const correct = await checkRow(rowNum);
       if(correct === word.length) {
@@ -204,10 +217,14 @@ function App() {
     <div className="container">
       <Header />
       <div className='banner' id='banner'>
+        <button id="bannerClose" onClick={() =>{
+          const dom = document.getElementById("banner");
+          dom.style.display = "none";
+        }} className="closeButton">X</button>
         <div id="banner-data">
       {banners}
       </div>
-      <button className="copyScore" onClick={copyScore}>Copy Score</button>
+      <button className="copyScore" id="copyScore" onClick={copyScore}>Copy Score</button>
       </div>
       <div className="maincontent" >
       {elements}<br />

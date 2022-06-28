@@ -5,7 +5,7 @@
 }
 .navbar {
   width: 100%;
-  height: 60px;
+  height: 3.75rem;
  background-color: #631919;
  color:white;
  display:flex;
@@ -13,13 +13,13 @@
  box-shadow: 0px 3.789px rgba(0,0,0,1);
 }
 .navbar > img {
-  width: 50px;
-  height: 60px;
-  margin: 10px;
+  width: 3.125rem;
+  height: 3.75rem;
+  margin: 0.625rem;
 
 }
 .maincontent {
-  margin-top: 150px;
+  margin-top: 9.375rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,15 +29,15 @@
   align-items: center;
 }
 .input{
-  height: 50px;
-  width: 50px;
+  height: min(8vh ,60px);
+  width: min(6vw, 50px);
   border-radius: 8px;
   border-color:aliceblue;
   display: inline-block;
-  margin: 10px;
+  margin: 0.625rem;
   color: white;
   text-align: center;
-  padding: 10px;
+  padding: 0.625rem;
   border: 1px;
   border-style: solid;
   font-size : 2rem;
@@ -49,17 +49,15 @@
   display: none;
   margin: auto;
   position: absolute;
-  left : 37vw;
+  left : max(15vw , 580px);
   top : 20vh;
-  width : 500px;
-  height : 300px;
+  width : 31.25rem;
+  height : 18.75rem;
   border-radius : 8px;
   z-index: 1000;
   background-color: #3a3a3c;
   border-color:aliceblue;
-  border-radius: 1px;
   border-style: solid;
-  border-radius: 8px;
   line-height: 0%;
 }
 .copyScore {
@@ -75,7 +73,14 @@
   align-items: center;
 }
 #banner-data {
-  margin-block: 20px;
+  margin-block: 1.25rem;
+}
+.closeButton {
+  background-color: azure;
+
+  position : absolute;
+  left: max(67vw, 620px);
+  top: 1vh;
 }
 .virtKeyboard {
   display: flex;
@@ -85,18 +90,18 @@
   height: auto;
 }
 .virtKey {
-  width: 55px;
+  width: min(5vw, 50px);
   overflow:hidden;
-  height: 50px;
+  height: min(5vh, 50px);
   background-color: azure;
   color: black;
   border-radius: 4px;
   border-style: solid;
   border-color:azure;
   border-width: 1px;
-  font-size: 1.5rem;
+  font-size: 2vh;
   font-weight: 500;
-  margin: 10px;
+  margin: max(10px,0.125rem);
 }
 @keyframes maybe {
   0% { background-color : #3a3a3c;
@@ -213,4 +218,12 @@
       transform : translateY(-10px);
       background-color: green;
   }
+}
+@keyframes clicked {
+  0% {background-color: azure;}
+  100% {background-color: black;}
+}
+@keyframes clicked-score {
+  0% {background-color: green;}
+  100% {background-color: black;}
 }
