@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/dotle/static/css/main.b0e65833.css",
-    "main.js": "/dotle/static/js/main.c4d55bf0.js",
+    "main.css": "/dotle/static/css/main.36f1923c.css",
+    "main.js": "/dotle/static/js/main.e920a945.js",
     "static/js/787.372bcdb9.chunk.js": "/dotle/static/js/787.372bcdb9.chunk.js",
     "static/media/dota.png": "/dotle/static/media/dota.c25d1594f23d0f4b131a.png",
     "index.html": "/dotle/index.html",
-    "main.b0e65833.css.map": "/dotle/static/css/main.b0e65833.css.map",
-    "main.c4d55bf0.js.map": "/dotle/static/js/main.c4d55bf0.js.map",
+    "main.36f1923c.css.map": "/dotle/static/css/main.36f1923c.css.map",
+    "main.e920a945.js.map": "/dotle/static/js/main.e920a945.js.map",
     "787.372bcdb9.chunk.js.map": "/dotle/static/js/787.372bcdb9.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b0e65833.css",
-    "static/js/main.c4d55bf0.js"
+    "static/css/main.36f1923c.css",
+    "static/js/main.e920a945.js"
   ]
 }
