@@ -7,6 +7,16 @@ import Keyboard from './Keyboard';
 
 function App() {
   let puzzleNumber;
+  let defaultState ={
+     board : [],
+     word : "",
+     rowNum: 0,
+     bannerData : "",
+     date : new Date(),
+     over: false,
+     puzzleNumber : -1
+    };
+    defaultState.date.setHours(0,0,0);
   let state = {};
   const wordlist = wordList();
   let renderFromState = false;
@@ -35,36 +45,19 @@ function App() {
   }
   if (localStorage.state) {
     state = JSON.parse(localStorage.state);
-    let today = new Date();
+    const today = new Date();
+    const todayState = new Date(state.date);
     today.setHours(0,0,0);
-    if(true) {
+    if(today.toDateString() === todayState.toDateString()) {
       renderFromState = true;
     
-}
+    }
   else {
-    state = {
-     board : [],
-     word : "",
-     rowNum: 0,
-     bannerData : "",
-     date : new Date(),
-     over : false,
-     puzzleNumber : -1
-    };
-    state.date.setHours(0,0,0);
+    state = defaultState;
   }
 }
   else {
-    state = {
-     board : [],
-     word : "",
-     rowNum: 0,
-     bannerData : "",
-     date : new Date(),
-     over: false,
-     puzzleNumber : -1
-    };
-    state.date.setHours(0,0,0);
+    state = defaultState;
 }
 const wordGen = () => {
       const today = new Date();
