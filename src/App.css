@@ -25,11 +25,12 @@
 }
 .alert{
   text-align:center;
+  z-index: 10000;
   overflow: hidden;
   border-radius: 4px;
   background-color: azure;
-  width: min(30.2%, 5rem);
-  padding-top: 0.25rem;
+  width: auto;
+  padding: 0.25rem;
   position: absolute;
   align-items: center;
   left: 42vw;

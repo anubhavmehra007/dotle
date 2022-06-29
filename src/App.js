@@ -20,6 +20,14 @@ function App() {
   let state = {};
   const wordlist = wordList();
   let renderFromState = false;
+  const setAlert = async function (message) {
+    const dom = document.getElementById("alert");
+    dom.textContent = message;
+    dom.style.animation = "alert-notice 1s";
+    await sleep(500);
+    dom.style.animation = "none";
+
+  }
   function renderFromStorage() {
     for (let row of state.board) {
       let rowNum = row.rowNum;
@@ -204,10 +212,7 @@ function App() {
       if (divNum === word.length) {
         const correct = await checkRow(rowNum);
         if (correct === -1) {
-          const dom = document.getElementById("alert");
-          dom.style.animation = "alert-notice 1s";
-          await sleep(500);
-          dom.style.animation = "none";
+          await setAlert("Not in List");
           return;
         }
         if (correct === word.length) {
@@ -215,6 +220,7 @@ function App() {
           createBanner();
         }
         if (rowNum === noOfTry - 1) {
+          await setAlert(word);
           createBanner();
         }
         else {
@@ -283,7 +289,7 @@ function App() {
   return (
     <div className="container" onLoad={() => { if (renderFromState) { renderFromStorage(); } }}>
       <Header />
-      <div className="alert" id="alert" >Not in List</div>
+      <div className="alert" id="alert" ></div>
       <div className='banner' id='banner'>
         <button id="bannerClose" onClick={() => {
           const dom = document.getElementById("banner");
