@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Row from './Row';
-import wordList from './wordList';
+import wordList from './WordList';
 import Header from './Header';
 import Keyboard from './Keyboard';
 
