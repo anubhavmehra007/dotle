@@ -48,7 +48,7 @@ function App() {
         else { }
         tile.textContent = char.toUpperCase();
       }
-      if (state.over) { createBanner(); }
+      if (state.over) { createBanner();  }
     }
   }
   if (localStorage.state) {
@@ -96,7 +96,7 @@ function App() {
   let virtInput;
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const [banners, setBanners] = React.useState([]);
-  const [bannerData, setBannerData] = React.useState(`Dotle puzzle: #${puzzleNumber}`);
+  const heading = `Dotle puzzle: #${puzzleNumber}`;
   const [over, setOver] = React.useState(false);
 
 
@@ -186,8 +186,8 @@ function App() {
     return correct;
   }
   function createBanner() {
-    setOver(true);
-    state.over = true;
+    if (!over)
+      setOver(true)
     const banner = document.getElementById("banner");
     const bannerLines = bannerText.split("\n");
     const bannersLocal = bannerLines.map(item => (
@@ -196,10 +196,12 @@ function App() {
     banner.style.display = "flex";
     banner.style.flexDirection = "column";
     banner.style.alignItems = "center";
-    setBanners(bannersLocal);
-    setBannerData(prevText => { return (prevText + "\n" + bannerText); });
-
+    setBanners(previtem => bannersLocal);
+    if(!state.over) {
+    state.over = true;
   }
+  }
+
   async function winner(rowNum) {
     for (let i = 0; i < word.length; i++) {
       const dom = document.getElementById(`row-${rowNum}-input-${i}`);
@@ -219,17 +221,17 @@ function App() {
           await winner(rowNum);
           createBanner();
         }
-        if (rowNum === noOfTry - 1) {
-          await setAlert(word);
+        if (rowNum === noOfTry - 1 && correct !== word.length) {
           createBanner();
+          await setAlert(word);
         }
         else {
           rowNum++;
           divNum = 0;
           console.log(row);
-          state.board.push({ ...row });
-          state.rowNum = rowNum;
         }
+        state.board.push({ ...row });
+        state.rowNum = rowNum;
         localStorage.setItem("state", JSON.stringify(state));
       }
     }
@@ -265,7 +267,7 @@ function App() {
     )
   }
   async function copyScore() {
-    navigator.clipboard.writeText(bannerData);
+    await navigator.clipboard.writeText(heading + "\n" + bannerText);
     const dom = document.getElementById("copyScore");
     dom.style.animation = "clicked-score 0.125s";
     await sleep(125);
@@ -296,7 +298,7 @@ function App() {
           dom.style.display = "none";
         }} className="closeButton">X</button>
         <div id="banner-data">
-          <p>Dotle puzzle : #{puzzleNumber}</p> <br />
+          <p>{heading}</p> <br />
           {banners}
         </div>
         <button className="copyScore" id="copyScore" onClick={copyScore}>Copy Score</button>
